@@ -3,6 +3,8 @@
 #include <string.h>
 #include <errno.h>
 
+#define MEASUREMENT_SIZE 2000
+
 
 FILE *safe_open(char *name, char *mode, int n)
 {
@@ -17,23 +19,29 @@ FILE *safe_open(char *name, char *mode, int n)
     return file;
 }
 
-int readCSV(FILE *file)
+float *readCSV(FILE *file,int n)
 {
-    
-    char line[5];
-    int ctr = 0;
+    float value;
+    int index = n, i = 0;
 
-    while (fgets(line,sizeof(line),file) && ctr < 10)    //  Read each line
+    float *arr = (float *)malloc(MEASUREMENT_SIZE * sizeof(float));
+    if (arr == NULL)
     {
-         char *token = strtok(line,",");
-
-         while(token != NULL)
-         {
-             printf("%s\n",token);
-             token = strtok(NULL,",");
-         }
-         printf("\n");
-         ctr++;
+        perror("Memory allocation has failed!");
+        fclose(file);
+        return 0; 
     }
+
+    while (fscanf(file, "%f,", &value) != EOF)
+    {
+        if (index % 7 == 0)
+        {
+            arr[i] = value;  
+            i++;  
+        }
+        index++; 
+    }
+
     fclose(file);
+    return arr; 
 }
