@@ -8,6 +8,7 @@
 #define FREQUENCY_HZ 5.0
 #define SAMPLE_RATE_HZ 1000.0
 #define DURATION_S 2.0
+#define NOISE_AMPLITUDE 0.2
 
 clock_t start_time, end_time;
 
@@ -15,8 +16,10 @@ int main()
 {
     FILE* fptr;
 
-    double time_s, amplitude,time_taken;
+    double time_s, amplitude,time_taken,noise;
     int num_samples;
+
+    srand((unsigned int)time(NULL));
 
     start_time = clock();
 
@@ -34,9 +37,16 @@ int main()
 
     for ( int i = 0 ; i < num_samples ; i++ )
     {
-        time_s = (double) i / SAMPLE_RATE_HZ;
+        time_s = (double)i / SAMPLE_RATE_HZ;
+
+	double random_val = (double)rand() / RAND_MAX;
+	noise = (random_val * NOISE_AMPLITUDE) - (NOISE_AMPLITUDE / 2.0);
+
         amplitude = sin( 2.0 * M_PI * FREQUENCY_HZ * time_s );
-        fprintf(fptr , "%lf,%lf\n", time_s, amplitude);
+
+	noise = amplitude + noise;
+
+        fprintf(fptr , "%lf,%lf\n", time_s, noise);
     }
 
     if(fclose(fptr) == 0)
