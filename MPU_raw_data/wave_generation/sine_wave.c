@@ -3,17 +3,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 #define FREQUENCY_HZ 5.0
 #define SAMPLE_RATE_HZ 1000.0
 #define DURATION_S 2.0
 
+clock_t start_time, end_time;
+
 int main()
 {
     FILE* fptr;
 
-    double time_s, amplitude;
+    double time_s, amplitude,time_taken;
     int num_samples;
+
+    start_time = clock();
 
     num_samples = (int)(DURATION_S*SAMPLE_RATE_HZ);
 
@@ -40,5 +45,10 @@ int main()
         printf("Error closing file\n");
     printf("Sine signal generation complete\n");
     
+    end_time=clock();
+
+    time_taken = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("\nExecution time: %lf seconds\n",time_taken);
+
     return 0;
 }
