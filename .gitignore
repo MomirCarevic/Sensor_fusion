@@ -41,3 +41,6 @@
 
 # VIM temporary files
 *.swp
+
+# ignore files with no extension
+*
